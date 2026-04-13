@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Protocol Simulator (ARP &amp; RARP)</title>
+    <meta name="description" content="Professional 3D ARP and RARP protocol simulator. Visualize network communication, broadcast/unicast frames, and routing behavior in real-time." />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- 3D Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay -->
+    <main id="ui-overlay">
+      <header class="glass-panel">
+        <h1>Network Protocol Simulator</h1>
+        <p class="subtitle">ARP &amp; RARP Visualization</p>
+      </header>
+
+      <div class="sidebar glass-panel">
+
+        <!-- NODE TOOLS -->
+        <section class="tools-section">
+          <h2>Node Tools</h2>
+          <div class="input-group">
+            <label for="node-name">Name</label>
+            <input type="text" id="node-name" placeholder="E.g., PC-1" />
+          </div>
+          <div class="input-group">
+            <label for="node-ip">IP Address</label>
+            <input type="text" id="node-ip" placeholder="192.168.1.10" />
+          </div>
+          <div class="input-group">
+            <label for="node-mask">Subnet Mask</label>
+            <input type="text" id="node-mask" placeholder="255.255.255.0" />
+          </div>
+          <div class="input-group">
+            <label for="node-gateway">Default Gateway</label>
+            <input type="text" id="node-gateway" placeholder="192.168.1.1" />
+          </div>
+          <div class="input-group">
+            <label for="node-mac">MAC Address</label>
+            <input type="text" id="node-mac" placeholder="AA:BB:CC:DD:EE:01" />
+          </div>
+          <div class="input-group checkbox-group">
+            <input type="checkbox" id="node-is-router" />
+            <label for="node-is-router">&#128225; Is Router?</label>
+          </div>
+          <div class="input-group checkbox-group">
+            <input type="checkbox" id="node-is-switch" />
+            <label for="node-is-switch">&#128256; Is Switch?</label>
+          </div>
+          <button id="btn-add-node" class="btn primary-btn">&#43; Add Node</button>
+        </section>
+
+        <!-- NETWORK CONNECTIONS -->
+        <section class="tools-section">
+          <h2>Network Connections</h2>
+          <p class="instructions">Select two nodes to link them.</p>
+          <button id="btn-connect" class="btn secondary-btn" disabled>&#128279; Connect Nodes</button>
+          <button id="btn-delete" class="btn danger-btn" disabled>&#128465; Delete Node</button>
+        </section>
+
+        <!-- TEST SIMULATOR -->
+        <section class="tools-section">
+          <h2>Test Simulator</h2>
+          <div class="input-group">
+            <label for="simulate-type">Protocol</label>
+            <select id="simulate-type">
+              <option value="arp">ARP (IP &#8594; MAC)</option>
+              <option value="rarp">RARP (MAC &#8594; IP)</option>
+              <option value="ping">PING (Routed Flow)</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="anim-speed">
+              Animation Speed&nbsp;
+              <span id="speed-label" class="speed-val">Slow</span>
+            </label>
+            <input type="range" id="anim-speed" min="1" max="4" step="1" value="1" class="speed-slider" />
+            <div class="speed-pip-row">
+              <span>Slow</span><span>Normal</span><span>Fast</span><span>Turbo</span>
+            </div>
+          </div>
+
+          <div class="input-group checkbox-group">
+            <input type="checkbox" id="step-mode-toggle" />
+            <label for="step-mode-toggle">Step-by-Step Mode</label>
+          </div>
+
+          <div class="instructions-panel">
+            <p id="sim-instructions" class="instructions">Select nodes to begin.</p>
+            <ul class="rule-list">
+              <li><strong>RARP:</strong> Select 1 Device (IP: Unknown)</li>
+              <li><strong>ARP:</strong> Select 2 Devices (with IPs)</li>
+            </ul>
+          </div>
+          <button id="btn-simulate" class="btn action-btn" disabled>&#9654; Run Simulation</button>
+          <button id="btn-next-step" class="btn secondary-btn hidden">&#9197; Next Step</button>
+          <button id="btn-replay" class="btn outline-btn hidden">&#8635; Replay Last</button>
+        </section>
+
+        <!-- CLARITY LEGEND -->
+        <section class="tools-section clarity-section">
+          <h2>&#128218; Clarity Legend</h2>
+          <div class="legend-item">
+            <span class="legend-dot broadcast-dot"></span>
+            <div>
+              <strong>Broadcast</strong>
+              <p class="legend-desc">Sent to ALL devices on the network</p>
+            </div>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot unicast-dot"></span>
+            <div>
+              <strong>Unicast</strong>
+              <p class="legend-desc">Sent to ONE specific device</p>
+            </div>
+          </div>
+          <div class="legend-item">
+            <span class="legend-icon">&#128187;</span>
+            <div>
+              <strong>Device</strong>
+              <p class="legend-desc">End host &mdash; ARP locally, routes externally</p>
+            </div>
+          </div>
+          <div class="legend-item">
+            <span class="legend-icon">&#128225;</span>
+            <div>
+              <strong>Router</strong>
+              <p class="legend-desc">Bridges subnets &mdash; makes routing decisions</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="tools-section">
+          <h2>Prebuilt Scenarios</h2>
+          <div class="scenario-grid">
+            <button id="btn-scen-arp-hit" class="btn small-btn outline-btn">ARP Cache Hit</button>
+            <button id="btn-scen-arp-miss" class="btn small-btn outline-btn">ARP Cache Miss</button>
+            <button id="btn-scen-rarp-ok" class="btn small-btn outline-btn">RARP Success</button>
+            <button id="btn-scen-rarp-fail" class="btn small-btn outline-btn">RARP Failure</button>
+          </div>
+        </section>
+
+        <!-- ADVANCED / EDGE CASES -->
+        <section class="tools-section">
+          <h2>Network Environment</h2>
+          <div class="input-group">
+            <label for="simulation-mode">Environment Mode</label>
+            <select id="simulation-mode">
+              <option value="normal">Normal Operation</option>
+              <option value="failure">Failure (No Reply)</option>
+              <option value="attack">Attack (Spoofed Reply)</option>
+            </select>
+          </div>
+
+          <div class="input-group checkbox-group">
+            <input type="checkbox" id="proxy-arp-toggle" />
+            <label for="proxy-arp-toggle">Enable Proxy ARP</label>
+          </div>
+        </section>
+          <button id="btn-edge-dupIP" class="btn outline-btn">Simulate Duplicate IP</button>
+          <button id="btn-edge-spoof" class="btn outline-btn">Fake ARP Reply</button>
+          <button id="btn-edge-timeout" class="btn outline-btn">RARP Timeout</button>
+        </section>
+
+      </div><!-- /.sidebar -->
+
+      <!-- STATUS PANEL -->
+      <div id="status-panel" class="glass-panel bottom-panel">
+        <h3>Network Activity / Logs</h3>
+        <div id="logs-container">
+          <p class="log-entry system-msg">[System] Network initialized. Add nodes to begin.</p>
+        </div>
+      </div>
+
+      <!-- NODE INFO PANEL -->
+      <div id="node-info-panel" class="glass-panel hidden">
+        <h3>Node Info</h3>
+        <p><strong>Name:</strong> <span id="info-name"></span></p>
+        <p><strong>IP:</strong> <span id="info-ip"></span></p>
+        <p><strong>MAC:</strong> <span id="info-mac"></span></p>
+        <p><strong>Gateway:</strong> <span id="info-gw"></span></p>
+        <p><strong>Mask:</strong> <span id="info-mask"></span></p>
+        <div class="table-container">
+          <h4>ARP Cache</h4>
+          <ul id="info-arp-cache"></ul>
+        </div>
+        <div class="table-container" id="mac-table-container">
+          <h4>MAC Address Table</h4>
+          <ul id="info-mac-table"></ul>
+        </div>
+        <button id="btn-close-info" class="btn small-btn">Close</button>
+      </div>
+
+      <!-- AI Guardian Panel -->
+      <div id="guardian-panel" class="glass-panel hidden">
+        <h3 class="guardian-title">&#128065; AI Guardian Active</h3>
+        <p id="guardian-msg" class="guardian-msg">Processing Anomaly...</p>
+        <button id="btn-guardian-action" class="btn action-btn">Auto-Fix</button>
+        <button id="btn-guardian-dismiss" class="btn outline-btn small-btn">Dismiss</button>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

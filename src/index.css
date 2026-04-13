@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg-dark: #0a0a0f;
+  --bg-gradient: radial-gradient(circle at center, #131422 0%, #050508 100%);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --arp-req: #3b82f6; /* Blue */
+  --arp-reply: #10b981; /* Green */
+  --rarp-req: #a855f7; /* Purple */
+  --rarp-reply: #f97316; /* Orange */
+  
+  --glass-bg: rgba(20, 20, 30, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-dark);
+  background-image: var(--bg-gradient);
+  color: var(--text-primary);
+  overflow: hidden; /* Canvas deals with everything */
+  width: 100vw;
+  height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Glassmorphism Panel Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* 3D Label Styles */
+.node-label {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transform: translate3d(-50%, -50%, 0);
+  transition: all 0.3s ease;
+}
+
+.node-label.active {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.node-label .ip {
+  color: #60a5fa; /* light blue */
+  margin-bottom: 4px;
+}
+.node-label .mac {
+  color: #34d399; /* light green */
+  font-size: 10px;
+}
+.node-label .unknown {
+  color: #f87171; /* red for missing info */
+}
+
+/* Base custom interactive bits */
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+}
+
+.primary-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.primary-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+.primary-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0%   { box-shadow: 0 0 5px rgba(255, 255, 255, 0.1); }
+  50%  { box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+  100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.1); }
+}
