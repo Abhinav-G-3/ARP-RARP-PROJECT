@@ -19,7 +19,14 @@ Maintaining an ARP cache to store resolved mappings
 
 STEP-BY-STEP IMPLEMENTATION:
 
-Step 1: Create Network Nodes
+Step 1: Deploy and Access
+
+* Project is uploaded in GitHub
+* Deploy using Vercel:
+   * By clicking "visit" in Production Deployment
+* Access the simulator through a web browser
+
+Step 2: Create Network Nodes
 
 * Enter required details such as:
   * IP Address
@@ -32,14 +39,14 @@ Step 1: Create Network Nodes
 Each node represents a system in the network.
 
 
-Step 2: Configure Network Devices
+Step 3: Configure Network Devices
 
 * Select **“Is Router”** to create a router
 * Select **“Is Switch”** to create a switch
 This allows simulation of real network components.
 
 
-Step 3: Establish Network Connections
+Step 4: Establish Network Connections
 
 * Select two nodes
 * Click **“Connect Nodes”**
@@ -47,7 +54,7 @@ Step 3: Establish Network Connections
 This forms the network topology.
 
 
-Step 4: Perform RARP Operation
+Step 5: Perform RARP Operation
 
 * Select a node with MAC address
 * Since DHCP is not used in this project, IP addresses are assigned using RARP
@@ -57,7 +64,7 @@ Step 4: Perform RARP Operation
 This simulates IP discovery using MAC address.
 
 
-Step 5: Perform ARP Between Systems
+Step 6: Perform ARP Between Systems
 
 * Choose sender and receiver nodes
 * Sender knows receiver’s IP but not MAC
@@ -66,7 +73,7 @@ Step 5: Perform ARP Between Systems
 This establishes communication between nodes.
 
 
-Step 6: Generate and Store ARP Cache
+Step 7: Generate and Store ARP Cache
 
 * After ARP response:
   * IP and MAC mapping is stored
@@ -74,7 +81,7 @@ Step 6: Generate and Store ARP Cache
 This improves efficiency by avoiding repeated requests.
 
 
-Step 7: Monitor Network Activity
+Step 8: Monitor Network Activity
 
 * All operations are displayed in the **Network Activity / Logs panel**
 * One can access network activity by clicking on the respective system
@@ -85,9 +92,5 @@ Step 7: Monitor Network Activity
 This helps in visualizing the protocol execution.
 
 
-Step 8: Deploy and Access
 
-* Project is uploaded in GitHub
-* Deploy using Vercel
-* Access the simulator through a web browser
 
